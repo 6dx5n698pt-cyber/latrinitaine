@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Trinitaine - Biscuiterie Bretonne Depuis 1955</title>
+    <meta name="description" content="La Trinitaine - Découvrez nos délicieux biscuits et spécialités bretonnes. Galerie de 70+ produits, paniers personnalisés, 48 boutiques en France.">
+    <meta name="theme-color" content="#8B4513">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #8B4513;
+            --secondary: #D4A574;
+            --accent: #2D5016;
+            --warm: #F5E6D3;
+            --dark: #2C1810;
+            --white: #ffffff;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--warm);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* NAVIGATION */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-logo span {
+            color: var(--secondary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .cart-btn {
+            position: relative;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .cart-btn:hover {
+            background: var(--secondary);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--accent);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 24px;
+            height: 2px;
+            background: var(--dark);
+            margin: 5px 0;
+            transition: 0.3s;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            margin-top: 80px;
+            padding: 80px 2rem 60px;
+            background: linear-gradient(135deg, var(--warm) 0%, #fef5e7 100%);
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(45, 80, 22, 0.1);
+            color: var(--accent);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--accent);
+        }
+
+        h1 {
+            font-size: clamp(2rem, 7vw, 4rem);
+            color: var(--primary);
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 2rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 0.65rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--secondary);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        /* PRODUCTS SECTION */
+        .section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .products-filter {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            background: white;
+            border: 2px solid var(--secondary);
+            color: var(--dark);
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .search-box {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto 2rem;
+            display: block;
+            padding: 0.75rem;
+            border: 2px solid var(--secondary);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            border: 1px solid rgba(212, 165, 116, 0.2);
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #FFF8DC 0%, #FFE4B5 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-category {
+            font-size: 0.8rem;
+            color: var(--secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--warm);
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .add-to-cart {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .add-to-cart:hover {
+            background: var(--secondary);
+        }
+
+        /* BASKET CUSTOMIZER */
+        .basket-section {
+            background: linear-gradient(135deg, #FFF8DC 0%, #FFE4B5 100%);
+        }
+
+        .basket-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .basket-items {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .basket-sizes {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .size-card {
+            padding: 1rem;
+            border: 2px solid var(--secondary);
+            border-radius: 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .size-card.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .size-card:hover {
+            border-color: var(--primary);
+        }
+
+        .size-card h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--warm);
+        }
+
+        .item-controls {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .qty-btn {
+            background: var(--warm);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .qty-btn:hover {
+            background: var(--secondary);
+        }
+
+        .basket-preview {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .preview-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--warm);
+            font-size: 0.9rem;
+        }
+
+        .preview-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        /* STORY SECTION */
+        .story-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .story-image {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .story-text h3 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .story-text p {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .value-card {
+            background: linear-gradient(135deg, var(--warm) 0%, #fef5e7 100%);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .value-card h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .value-card p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* SHOPS SECTION */
+        .shops-section {
+            background: linear-gradient(135deg, var(--warm) 0%, #fef5e7 100%);
+        }
+
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .shop-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-top: 3px solid var(--primary);
+            transition: all 0.3s;
+        }
+
+        .shop-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .shop-name {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .shop-info {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .shop-region {
+            display: inline-block;
+            background: var(--warm);
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h4 {
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            display: block;
+            transition: color 0.3s;
+        }
+
+        .footer-column a:hover {
+            color: var(--secondary);
+        }
+
+        .newsletter {
+            background: var(--primary);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .newsletter h3 {
+            margin-bottom: 1rem;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.25rem;
+        }
+
+        .newsletter-form button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .newsletter-form button:hover {
+            background: var(--warm);
+            color: var(--dark);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .nav-links.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background: white;
+                padding: 1rem;
+                gap: 1rem;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .hero {
+                margin-top: 60px;
+                padding: 40px 1.5rem 30px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .section {
+                padding: 2rem 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 1rem;
+            }
+
+            .basket-container {
+                grid-template-columns: 1fr;
+            }
+
+            .basket-preview {
+                position: static;
+                margin-top: 2rem;
+            }
+
+            .story-container {
+                grid-template-columns: 1fr;
+            }
+
+            .story-image {
+                height: 250px;
+                font-size: 3rem;
+            }
+
+            .basket-sizes {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .product-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* TOAST NOTIFICATION */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease-out;
+            z-index: 2000;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVIGATION -->
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="nav-logo">La<span>Trinitaine</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#products">Produits</a></li>
+                <li><a href="#basket">Paniers</a></li>
+                <li><a href="#story">Histoire</a></li>
+                <li><a href="#shops">Boutiques</a></li>
+            </ul>
+            <button class="cart-btn" onclick="toggleCart()">
+                🛒 <span class="cart-count" id="cartCount">0</span>
+            </button>
+            <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">🇧🇷 Biscuiterie Bretonne Depuis 1955</div>
+            <h1>L'authenticité du biscuit breton</h1>
+            <p class="subtitle">Découvrez nos délicieux biscuits et spécialités bretonnes, élaborés avec passion et savoir-faire depuis 1955 à La Trinité-sur-Mer.</p>
+            <div class="hero-ctas">
+                <button class="btn-primary" onclick="document.getElementById('products').scrollIntoView()">Découvrir nos produits</button>
+                <button class="btn-secondary" onclick="document.getElementById('basket').scrollIntoView()">Voir paniers</button>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-number">70+</div>
+                    <div class="stat-label">Produits</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">48</div>
+                    <div class="stat-label">Boutiques</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">1955</div>
+                    <div class="stat-label">Fondée</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">70</div>
+                    <div class="stat-label">Ans</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section id="products" class="section">
+        <h2 class="section-title">Nos Produits</h2>
+        <p class="section-subtitle">Découvrez notre sélection de biscuits et spécialités bretonnes</p>
+
+        <input type="text" class="search-box" id="searchBox" placeholder="Rechercher un produit..." onkeyup="filterProducts()">
+
+        <div class="products-filter" id="filterButtons">
+            <button class="filter-btn active" onclick="filterByCategory('Tous')">Tous</button>
+            <button class="filter-btn" onclick="filterByCategory('Biscuits')">Biscuits</button>
+            <button class="filter-btn" onclick="filterByCategory('Gâteaux')">Gâteaux</button>
+            <button class="filter-btn" onclick="filterByCategory('Spécialités')">Spécialités</button>
+            <button class="filter-btn" onclick="filterByCategory('Épicerie')">Épicerie</button>
+        </div>
+
+        <div class="products-grid" id="productsGrid"></div>
+    </section>
+
+    <!-- BASKET CUSTOMIZER -->
+    <section id="basket" class="section basket-section">
+        <h2 class="section-title">🎁 Paniers Gourmands Personnalisés</h2>
+        <p class="section-subtitle">Composez votre panier idéal en fonction de vos envies</p>
+
+        <div class="basket-container">
+            <div class="basket-items">
+                <h3>Choisissez vos articles</h3>
+                <p style="margin-bottom: 1.5rem; color: #999;">Sélectionnés: <strong id="basketCount">0</strong>/<strong id="basketCapacity">6</strong></p>
+                <div id="basketItemsList"></div>
+            </div>
+
+            <div class="basket-preview">
+                <h3>Résumé</h3>
+                <div id="basketSummary"></div>
+                <button class="btn-primary" style="width: 100%; margin-top: 1rem;">Ajouter au panier</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- STORY -->
+    <section id="story" class="section">
+        <h2 class="section-title">La Trinitaine : 70 ans de passion</h2>
+        <div class="story-container">
+            <div class="story-image">🏭</div>
+            <div class="story-text">
+                <h3>Fondée en 1955 à La Trinité-sur-Mer</h3>
+                <p>La Trinitaine est bien plus qu'une biscuiterie. C'est une histoire de famille, de tradition et de dévouement.</p>
+                <p>Depuis plus de 70 ans, nous perpétuons un savoir-faire authentique de biscuitier, en utilisant les meilleures matières premières et les recettes traditionnelles bretonnes.</p>
+                
+                <h3 style="margin-top: 1.5rem;">Nos Valeurs</h3>
+                <div class="values-grid">
+                    <div class="value-card">
+                        <h4>🏆 Qualité</h4>
+                        <p>Des produits faits avec les meilleures matières premières</p>
+                    </div>
+                    <div class="value-card">
+                        <h4>❤️ Authenticité</h4>
+                        <p>Des recettes traditionnelles bretonnes</p>
+                    </div>
+                    <div class="value-card">
+                        <h4>🌍 Durabilité</h4>
+                        <p>Un engagement envers l'environnement</p>
+                    </div>
+                    <div class="value-card">
+                        <h4>👨‍🍳 Savoir-faire</h4>
+                        <p>Des biscuitiers passionnés</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SHOPS -->
+    <section id="shops" class="section shops-section">
+        <h2 class="section-title">Nos 48 Boutiques</h2>
+        <p class="section-subtitle">Découvrez nos boutiques réparties sur toute la France</p>
+
+        <div class="shop-grid" id="shopsGrid"></div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <div class="newsletter">
+                <h3>Restez connecté ! 📧</h3>
+                <p>Recevez nos recettes exclusives et promotions</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Votre email...">
+                    <button>S'abonner</button>
+                </div>
+            </div>
+
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h4>Entreprise</h4>
+                    <ul>
+                        <li><a href="#story">Qui sommes-nous ?</a></li>
+                        <li><a href="#shops">Nos boutiques</a></li>
+                        <li><a href="#">Nous rejoindre</a></li>
+                        <li><a href="#">Presse</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Produits</h4>
+                    <ul>
+                        <li><a href="#products">Biscuits</a></li>
+                        <li><a href="#basket">Paniers gourmands</a></li>
+                        <li><a href="#">Épicerie fine</a></li>
+                        <li><a href="#">Coffrets cadeaux</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="tel:+33297642000">+33 2 97 64 20 00</a></li>
+                        <li><a href="mailto:contact@latrinitaine.com">contact@latrinitaine.com</a></li>
+                        <li>La Trinité-sur-Mer</li>
+                        <li>Bretagne, France</li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Suivez-nous</h4>
+                    <ul>
+                        <li><a href="#">🔵 Facebook</a></li>
+                        <li><a href="#">📷 Instagram</a></li>
+                        <li><a href="#">🐦 Twitter</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2024 La Trinitaine - Tous droits réservés | Biscuiterie bretonne depuis 1955</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="toast" style="display: none;"></div>
+
+    <script>
+        // PRODUCTS DATA
+        const products = [
+            { id: 1, name: 'Palets Bretons Pur Beurre', category: 'Biscuits', price: 9.5, image: '🍪', badge: 'Best-seller' },
+            { id: 2, name: 'Cigarettes Bretonnes', category: 'Biscuits', price: 6.95, image: '🥐' },
+            { id: 3, name: 'Galettes Bretonnes', category: 'Biscuits', price: 7.5, image: '🍘' },
+            { id: 4, name: 'Madeleines Dorées', category: 'Gâteaux', price: 8.5, image: '🧁' },
+            { id: 5, name: 'Œufs de Mouette', category: 'Spécialités', price: 8.95, image: '🥚' },
+            { id: 6, name: 'Caramel Beurre Salé', category: 'Épicerie', price: 6.5, image: '🍮' },
+            { id: 7, name: 'Kouign Amann', category: 'Gâteaux', price: 5.5, image: '🧈' },
+            { id: 8, name: 'Assortiment Biscuits', category: 'Biscuits', price: 19.99, image: '📦', badge: 'Nouveau' },
+            { id: 9, name: 'Crêpes Dentelle', category: 'Biscuits', price: 7.99, image: '🎀' },
+            { id: 10, name: 'Pâte à Tartiner', category: 'Épicerie', price: 8.99, image: '🍯' },
+            { id: 11, name: 'Confiture Fraise', category: 'Épicerie', price: 6.99, image: '🍓' },
+            { id: 12, name: 'Miel Breton', category: 'Épicerie', price: 7.99, image: '🍯' },
+        ];
+
+        const shops = [
+            { name: 'La Trinitaine - Lorient', city: 'Lorient', address: '15 rue de la Paix, 56100', phone: '+33 2 97 64 20 00', hours: 'Lun-Sam: 9h-19h', region: 'Bretagne' },
+            { name: 'La Trinitaine - Saint-Malo', city: 'Saint-Malo', address: '42 rue de la Hoguette, 35400', phone: '+33 2 99 40 80 00', hours: 'Lun-Dim: 9h-20h', region: 'Bretagne' },
+            { name: 'La Trinitaine - Vannes', city: 'Vannes', address: '8 rue de la Fontaine, 56000', phone: '+33 2 97 42 15 00', hours: 'Lun-Sam: 9h-19h', region: 'Bretagne' },
+            { name: 'La Trinitaine - Paris', city: 'Paris', address: '125 Galerie Lafayette, 75009', phone: '+33 1 42 80 00 00', hours: 'Lun-Sam: 9h-20h', region: 'Île-de-France' },
+            { name: 'La Trinitaine - Lyon', city: 'Lyon', address: '32 rue de la République, 69002', phone: '+33 4 78 42 00 00', hours: 'Lun-Sam: 10h-19h', region: 'Rhône-Alpes' },
+            { name: 'La Trinitaine - Marseille', city: 'Marseille', address: '15 rue Paradis, 13006', phone: '+33 4 91 33 00 00', hours: 'Lun-Sam: 10h-19h', region: 'Provence' },
+        ];
+
+        const basketItems = [
+            { id: 1, name: 'Palets Bretons', icon: '🍪', price: 9.5 },
+            { id: 2, name: 'Cigarettes', icon: '🥐', price: 6.95 },
+            { id: 3, name: 'Galettes', icon: '🍘', price: 7.5 },
+            { id: 4, name: 'Madeleines', icon: '🧁', price: 8.5 },
+            { id: 5, name: 'Œufs de Mouette', icon: '🥚', price: 8.95 },
+            { id: 6, name: 'Caramel', icon: '🍮', price: 6.5 },
+        ];
+
+        const basketSizes = [
+            { name: 'Petit', price: 19.99, capacity: 3 },
+            { name: 'Moyen', price: 39.99, capacity: 6 },
+            { name: 'Grand', price: 59.99, capacity: 9 },
+        ];
+
+        // STATE
+        let currentFilter = 'Tous';
+        let currentBasketSize = basketSizes[1];
+        let basketContent = {};
+        let cart = [];
+
+        // INIT
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            renderBasketCustomizer();
+            renderShops();
+        });
+
+        // RENDER PRODUCTS
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            const filtered = products.filter(p => 
+                (currentFilter === 'Tous' || p.category === currentFilter) &&
+                p.name.toLowerCase().includes(document.getElementById('searchBox').value.toLowerCase())
+            );
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="no-results">Aucun produit trouvé</div>';
+                return;
+            }
+
+            grid.innerHTML = filtered.map(p => `
+                <div class="product-card">
+                    <div class="product-image">
+                        ${p.image}
+                        ${p.badge ? `<div class="product-badge">${p.badge}</div>` : ''}
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category">${p.category}</div>
+                        <div class="product-name">${p.name}</div>
+                        <div class="product-footer">
+                            <div class="product-price">${p.price.toFixed(2)}€</div>
+                            <button class="add-to-cart" onclick="addToCart(${p.id}, '${p.name}', ${p.price})">🛒</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterByCategory(cat) {
+            currentFilter = cat;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderProducts();
+        }
+
+        function filterProducts() {
+            renderProducts();
+        }
+
+        // CART
+        function addToCart(id, name, price) {
+            cart.push({ id, name, price });
+            document.getElementById('cartCount').textContent = cart.length;
+            showToast(`${name} ajouté au panier !`);
+        }
+
+        function toggleCart() {
+            alert(`Panier (${cart.length} articles)\n\n${cart.map(p => `${p.name} - ${p.price}€`).join('\n')}\n\nTotal: ${cart.reduce((s, p) => s + p.price, 0).toFixed(2)}€`);
+        }
+
+        // BASKET CUSTOMIZER
+        function renderBasketCustomizer() {
+            renderBasketSizes();
+            renderBasketItems();
+            updateBasketPreview();
+        }
+
+        function renderBasketSizes() {
+            const html = basketSizes.map(size => `
+                <div class="size-card ${size.name === currentBasketSize.name ? 'active' : ''}" onclick="selectBasketSize('${size.name}')">
+                    <h4>${size.name}</h4>
+                    <strong>${size.price}€</strong>
+                    <small>${size.capacity} articles</small>
+                </div>
+            `).join('');
+            
+            // Insert before items if needed
+            const container = document.querySelector('.basket-container .basket-items');
+            if (container) {
+                const existing = container.querySelector('.basket-sizes');
+                if (existing) existing.remove();
+                const title = container.querySelector('h3');
+                const element = document.createElement('div');
+                element.className = 'basket-sizes';
+                element.innerHTML = html;
+                title.after(element);
+            }
+        }
+
+        function selectBasketSize(name) {
+            currentBasketSize = basketSizes.find(s => s.name === name);
+            basketContent = {};
+            renderBasketCustomizer();
+        }
+
+        function renderBasketItems() {
+            const html = basketItems.map(item => `
+                <div class="item-row">
+                    <div>
+                        <strong>${item.icon} ${item.name}</strong><br>
+                        <small>${item.price}€</small>
+                    </div>
+                    <div class="item-controls">
+                        <button class="qty-btn" onclick="updateBasketItem(${item.id}, -1)">−</button>
+                        <span>${basketContent[item.id] || 0}</span>
+                        <button class="qty-btn" onclick="updateBasketItem(${item.id}, 1)">+</button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('basketItemsList').innerHTML = `
+                <div style="margin-bottom: 1rem;">Taille: <strong>${currentBasketSize.name}</strong> (${currentBasketSize.capacity} articles max)</div>
+                ${html}
+            `;
+        }
+
+        function updateBasketItem(id, delta) {
+            const totalItems = Object.values(basketContent).reduce((a, b) => a + b, 0);
+            const current = basketContent[id] || 0;
+
+            if (delta > 0 && totalItems >= currentBasketSize.capacity) return;
+            if (delta < 0 && current <= 0) return;
+
+            basketContent[id] = current + delta;
+            if (basketContent[id] <= 0) delete basketContent[id];
+
+            renderBasketItems();
+            updateBasketPreview();
+        }
+
+        function updateBasketPreview() {
+            const totalItems = Object.values(basketContent).reduce((a, b) => a + b, 0);
+            document.getElementById('basketCount').textContent = totalItems;
+            document.getElementById('basketCapacity').textContent = currentBasketSize.capacity;
+
+            const itemsTotal = Object.entries(basketContent).reduce((sum, [id, qty]) => {
+                const item = basketItems.find(i => i.id == id);
+                return sum + (item.price * qty);
+            }, 0);
+
+            const total = currentBasketSize.price + itemsTotal;
+
+            let summary = `<div class="preview-item"><strong>${currentBasketSize.name}</strong><span>${currentBasketSize.price}€</span></div>`;
+            
+            Object.entries(basketContent).forEach(([id, qty]) => {
+                const item = basketItems.find(i => i.id == id);
+                summary += `<div class="preview-item">${item.name} ×${qty}<span>${(item.price * qty).toFixed(2)}€</span></div>`;
+            });
+
+            summary += `<div class="preview-total"><span>Total</span><span>${total.toFixed(2)}€</span></div>`;
+
+            document.getElementById('basketSummary').innerHTML = summary;
+        }
+
+        // SHOPS
+        function renderShops() {
+            const html = shops.map(shop => `
+                <div class="shop-card">
+                    <div class="shop-name">${shop.name}</div>
+                    <div class="shop-info">📍 ${shop.address}</div>
+                    <div class="shop-info">📞 <a href="tel:${shop.phone}">${shop.phone}</a></div>
+                    <div class="shop-info">🕐 ${shop.hours}</div>
+                    <div class="shop-region">${shop.region}</div>
+                </div>
+            `).join('');
+
+            document.getElementById('shopsGrid').innerHTML = html;
+        }
+
+        // MENU TOGGLE
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+
+        // TOAST
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // MOBILE MENU CLOSE ON LINK CLICK
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navLinks').classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>
