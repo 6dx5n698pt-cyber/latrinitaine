@@ -88,7 +88,7 @@ def make(seed, out, preview_only=False):
             b.close(); return
         vid = out.replace('.mp4','_v.mp4')
         ff = subprocess.Popen(['ffmpeg','-v','error','-y','-f','image2pipe','-framerate',str(FPS),'-c:v','mjpeg','-i','-',
-                               '-c:v','libx264','-pix_fmt','yuv420p','-crf','19','-preset','medium',vid], stdin=subprocess.PIPE)
+                               '-c:v','libx264','-pix_fmt','yuv420p','-crf','24','-preset','slow',vid], stdin=subprocess.PIPE)
         n = 0
         while True:
             r = pg.evaluate('BB.frame(true)')
