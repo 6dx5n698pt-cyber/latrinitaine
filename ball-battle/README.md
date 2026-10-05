@@ -1,12 +1,12 @@
 # Ball Battle Royale – générateur de vidéos
 
-Même modèle que @ballbattleroyale : 8 pays à 110 PV placés en cercle, l'anneau est partagé en 8 territoires
-(faisceaux de traits de chaque boule vers son territoire).
-- Choc : la boule qui fonce sur l'autre lui retire des PV (son « tock »).
-- Rebond sur son propre territoire : soin.
-- Avant chaque mort : « ● SLOW MOTION », puis explosion (son « boom »), « X OUT », le tueur récupère le territoire.
-- Final Four / Three / Final, puis « X WINS! ».
-Format TikTok 1080×1920, 30 fps, ~33 s.
+Même modèle que @ballbattleroyale : 8 pays, chacun commence avec 110 fils tendus vers sa portion de l'anneau.
+- Le nombre sous chaque boule = son nombre de fils.
+- Quand une boule touche le bord, elle crée de nouveaux fils à cet endroit (max 110).
+- Quand une boule passe sur les fils d'un autre pays, elle les casse.
+- Plus de fils = éliminé (« ● SLOW MOTION » juste avant, explosion + son, « X OUT »).
+- Chocs entre boules : rebond + son « tock ». Final Four / Three / Final, puis « X WINS! ».
+Format TikTok 1080×1920, 30 fps, ~25-30 s.
 
 ## Générer de nouvelles vidéos
 ```bash

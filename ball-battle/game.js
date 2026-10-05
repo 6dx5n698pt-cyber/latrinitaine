@@ -13,10 +13,9 @@
 
   let R = R0;
   const CELLS = 720;                 // ring territory cells
-  const owner = new Array(CELLS).fill(-1);
   const balls = [], dead = [], dying = [], particles = [], events = [];
   let frameNo = 0, simT = 0, stepNo = 0, ts = 1, killSteps = [], winner = null, winFrame = -1, banner = null;
-  const HP = cfg.hp;
+  const MAXS = cfg.strings;
 
   const N = cfg.countries.length;
   const baseR = 54;
@@ -28,9 +27,9 @@
     const d = R - baseR - 30;
     const dir = a + (rng() < 0.5 ? 1 : -1) * Math.PI / 2 + rnd(-0.6, 0.6);
     balls.push({ ...c, id: i, x: CX + Math.cos(a) * d, y: CY + Math.sin(a) * d,
-      vx: Math.cos(dir), vy: Math.sin(dir), r: baseR, hp: HP, flash: 0, heal: 0, cd: {} });
-    const c0 = Math.round(((a - Math.PI / N) / (2 * Math.PI)) * CELLS);
-    for (let k = 0; k < CELLS / N; k++) owner[((c0 + k) % CELLS + CELLS) % CELLS] = i;
+      vx: Math.cos(dir), vy: Math.sin(dir), r: baseR, flash: 0, cd: {}, anchors: [] });
+    // 110 strings spread over this country's slice of the ring
+    for (let k = 0; k < MAXS; k++) balls[i].anchors.push(a - Math.PI / N + (k + 0.5) * 2 * Math.PI / N / MAXS);
   });
   const byId = id => balls.find(b => b.id === id);
 
@@ -69,14 +68,10 @@
       const dot = b.vx * nx + b.vy * ny;
       if (dot <= 0) continue;
       b.vx -= 2 * dot * nx; b.vy -= 2 * dot * ny; norm(b, 0.25);
-      // claim territory around the impact; bouncing on your own turf heals
-      const c = cellOf(Math.atan2(ny, nx));
-      const mine = owner[c] === b.id;
-      for (let k = -cfg.claim; k <= cfg.claim; k++) owner[(c + k + CELLS) % CELLS] = b.id;
-      if (mine && b.hp < HP && balls.length > 3) {
-        const h = Math.round(rnd(cfg.heal[0], cfg.heal[1]));
-        b.hp = Math.min(HP, b.hp + h); b.heal = 1;
-      }
+      // touching the border spins new strings at the impact point
+      const ha = Math.atan2(ny, nx);
+      const add = Math.min(Math.round(rnd(cfg.gain[0], cfg.gain[1])), MAXS - b.anchors.length);
+      for (let k = 0; k < add; k++) b.anchors.push(ha + rnd(-cfg.spread, cfg.spread));
     }
     for (let i = 0; i < balls.length; i++) for (let j = i + 1; j < balls.length; j++) {
       const a = balls[i], b = balls[j];
@@ -92,13 +87,30 @@
       const key = a.id * 100 + b.id;
       if (a.cd[key] > stepNo) continue;
       a.cd[key] = stepNo + 0.25 * FPS * MICRO;
-      // the rammer deals the damage, the rammed ball takes it
-      const [atk, vic, push] = aT >= bT ? [a, b, aT] : [b, a, bT];
-      const dmg = Math.round(rnd(cfg.dmg[0], cfg.dmg[1]) + cfg.dmgPush * Math.max(0, push) / speed());
-      vic.hp -= dmg; vic.flash = 1; vic.lastBy = atk.id;
-      events.push({ f: frameNo, type: 'hit', v: Math.min(1, dmg / 25) });
+      a.flash = 1; b.flash = 1;
+      events.push({ f: frameNo, type: 'hit', v: 0.7 });
       const px = a.x + nx * a.r, py = a.y + ny * a.r;
-      for (let k = 0; k < 16; k++) spark(px, py, k % 2 ? atk.color : '#ffffff', 260, 0.5);
+      for (let k = 0; k < 14; k++) spark(px, py, k % 2 ? a.color : b.color, 260, 0.5);
+    }
+  }
+
+  // a ball sweeping across another country's strings snaps them
+  function cut() {
+    for (const o of balls) for (const b of balls) {
+      if (o === b) continue;
+      const rr = (o.r * cfg.cutReach) ** 2;
+      const keep = [];
+      for (const an of b.anchors) {
+        const ex = CX + Math.cos(an) * R, ey = CY + Math.sin(an) * R;
+        const sx = ex - b.x, sy = ey - b.y, L = sx * sx + sy * sy;
+        let t = ((o.x - b.x) * sx + (o.y - b.y) * sy) / L;
+        t = Math.max(0, Math.min(1, t));
+        const qx = b.x + sx * t - o.x, qy = b.y + sy * t - o.y;
+        if (qx * qx + qy * qy < rr) {
+          if (rng() < 0.25) spark(b.x + sx * t, b.y + sy * t, b.color, 120, 0.4);
+        } else keep.push(an);
+      }
+      if (keep.length !== b.anchors.length) b.anchors = keep;
     }
   }
 
@@ -111,8 +123,6 @@
     balls.splice(balls.indexOf(b), 1);
     dead.push(b);
     dying.push({ b, t: 0 });
-    const heir = balls.some(o => o.id === b.lastBy) ? b.lastBy : -1;
-    for (let c = 0; c < CELLS; c++) if (owner[c] === b.id) owner[c] = heir;
     events.push({ f: frameNo, type: 'die', v: 1 });
     killSteps.push(stepNo);
     for (let k = 0; k < 60; k++) spark(b.x, b.y, k % 3 ? b.color : '#ffffff', 420, 0.9);
@@ -122,7 +132,7 @@
   // slow motion when a weak ball is about to be rammed
   function danger() {
     for (const v of balls) {
-      if (v.hp > cfg.slowHp) continue;
+      if (v.anchors.length > 20) continue;
       for (const o of balls) {
         if (o === v) continue;
         const dx = v.x - o.x, dy = v.y - o.y, d = Math.hypot(dx, dy);
@@ -160,18 +170,15 @@
     for (const b of balls) {
       ctx.strokeStyle = hexA(b.color, 0.5);
       ctx.beginPath();
-      for (let c = 0; c < CELLS; c++) if (owner[c] === b.id) {
-        const [x, y] = ringPt(c, R); ctx.moveTo(b.x, b.y); ctx.lineTo(x, y);
-      }
+      for (const an of b.anchors) { ctx.moveTo(b.x, b.y); ctx.lineTo(CX + Math.cos(an) * R, CY + Math.sin(an) * R); }
       ctx.stroke();
     }
-    // ring: dotted, colored by owner
-    for (let c = 0; c < CELLS; c++) {
-      const o = owner[c], b = o >= 0 ? byId(o) : null;
-      const col = b ? b.color : '#8a93a6';
-      const [x, y] = ringPt(c, R);
-      ctx.fillStyle = hexA(col, b ? 0.95 : 0.35);
-      ctx.beginPath(); ctx.arc(x, y, b ? 3 : 2, 0, 7); ctx.fill();
+    // ring: faint base dots, bright dots where strings are anchored
+    ctx.fillStyle = 'rgba(160,170,190,0.35)';
+    for (let c = 0; c < CELLS; c += 2) { const [x, y] = ringPt(c, R); ctx.beginPath(); ctx.arc(x, y, 1.6, 0, 7); ctx.fill(); }
+    for (const b of balls) {
+      ctx.fillStyle = hexA(b.color, 0.95);
+      for (const an of b.anchors) { ctx.beginPath(); ctx.arc(CX + Math.cos(an) * R, CY + Math.sin(an) * R, 2.6, 0, 7); ctx.fill(); }
     }
     ctx.globalCompositeOperation = 'source-over';
     ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,0.55)'; ctx.lineWidth = 1.5;
@@ -231,12 +238,11 @@
     sh.addColorStop(0, 'rgba(255,255,255,0.28)'); sh.addColorStop(0.55, 'rgba(255,255,255,0)'); sh.addColorStop(1, 'rgba(0,0,0,0.3)');
     ctx.fillStyle = sh; ctx.fillRect(b.x - r, b.y - r, 2 * r, 2 * r);
     if (k > 0) { ctx.fillStyle = `rgba(255,255,255,${0.5 * k})`; ctx.fillRect(b.x - r, b.y - r, 2 * r, 2 * r); }
-    if (b.heal > 0) { ctx.fillStyle = `rgba(80,255,140,${0.35 * b.heal})`; ctx.fillRect(b.x - r, b.y - r, 2 * r, 2 * r); }
     ctx.restore();
     if (label) {
       ctx.font = '900 30px Montserrat'; ctx.textAlign = 'center';
       ctx.lineWidth = 6; ctx.strokeStyle = 'rgba(0,0,0,0.85)';
-      const t = String(Math.max(0, Math.ceil(b.hp)));
+      const t = String(b.anchors.length);
       ctx.strokeText(t, b.x, b.y + r + 32);
       ctx.fillStyle = '#fff'; ctx.fillText(t, b.x, b.y + r + 32);
     }
@@ -272,17 +278,15 @@
   // ---------- frame driver ----------
   function update() {
     // slow motion around kills known from the first (preview) pass
-    const pre = 0.75 * FPS * MICRO, post = 0.3 * FPS * MICRO;
+    const pre = 0.45 * FPS * MICRO, post = 0.15 * FPS * MICRO;
     const near = (cfg.slowAt || []).some(k => stepNo > k - pre && stepNo < k + post);
     ts += ((!winner && near ? cfg.slowFactor : 1) - ts) * 0.3;
     const nSteps = winner ? MICRO : Math.max(2, Math.round(MICRO * ts));
     const dtF = nSteps * DT;
     if (!winner) {
       for (let s = 0; s < nSteps; s++) {
-        if (balls.length <= 2) R = Math.max(330, R - 0.5 / MICRO);
-        step(DT); stepNo++;
-        for (const b of balls.filter(b => b.hp <= 0).sort((a, b) => a.hp - b.hp)) if (balls.length > 1) kill(b);
-        for (const b of balls) if (b.hp <= 0) b.hp = 1;
+        step(DT); cut(); stepNo++;
+        for (const b of balls.filter(b => b.anchors.length === 0)) if (balls.length > 1) kill(b);
         const tr = radiusFor(balls.length);
         for (const b of balls) b.r += (tr - b.r) * (0.03 / MICRO);
         if (balls.length === 1) break;
@@ -292,13 +296,13 @@
       const w = winner;
       w.x += (CX - w.x) * 0.07; w.y += (CY - w.y) * 0.07; w.r += (120 - w.r) * 0.07;
       // winner takes the whole ring
-      for (let c = 0; c < CELLS; c++) if (owner[c] !== w.id && rng() < 0.08) owner[c] = w.id;
+      for (let k = 0; k < 8 && w.anchors.length < 360; k++) w.anchors.push(rnd(0, Math.PI * 2));
       if ((frameNo - winFrame) % 5 === 0) for (let k = 0; k < 12; k++) {
         const cols = [w.color, '#ffd23f', '#ffffff', '#ff4d8d', '#3ddcff'];
         spark(CX + rnd(-420, 420), CY - R + rnd(0, 80), cols[k % 5], 200, 1.6);
       }
     }
-    for (const b of balls) { b.flash = Math.max(0, b.flash - 0.1 * ts - 0.02); b.heal = Math.max(0, b.heal - 0.08); }
+    for (const b of balls) { b.flash = Math.max(0, b.flash - 0.1 * ts - 0.02); }
     for (const p of particles) { p.x += p.vx * dtF; p.y += p.vy * dtF; p.vx *= 0.95; p.vy *= 0.95; if (winner) p.vy += 8; p.life -= dtF; }
     for (let i = particles.length - 1; i >= 0; i--) if (particles[i].life <= 0) particles.splice(i, 1);
     for (const d of dying) d.t += dtF;

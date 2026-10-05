@@ -8,15 +8,15 @@ FPS = 30
 PALETTE = ['#3d6bff', '#ffc21a', '#22c55e', '#e040c8', '#ff8a1f', '#22d3c5', '#ff3048', '#9b5cff']
 NAMES = dict(fr='France', de='Germany', es='Spain', pt='Portugal', be='Belgium', it='Italy', gb='UK', ma='Morocco',
              br='Brazil', ar='Argentina', us='USA', mx='Mexico', jp='Japan', dz='Algeria', tn='Tunisia', sn='Senegal',
-             tr='Türkiye', nl='Netherlands', pl='Poland', ch='Switzerland', kr='South Korea')
+             tr='Türkiye', ci='Ivory Coast', nl='Netherlands', pl='Poland', ch='Switzerland', kr='South Korea')
 ROSTERS = {  # 8 countries per video, placed clockwise from the top-left
  'europe':   ['fr', 'de', 'es', 'pt', 'be', 'it', 'gb', 'ma'],
  'monde':    ['fr', 'br', 'es', 'jp', 'mx', 'ar', 'us', 'kr'],
- 'afrique':  ['fr', 'dz', 'es', 'tn', 'sn', 'it', 'ma', 'tr'],
+ 'afrique':  ['fr', 'dz', 'es', 'tn', 'sn', 'it', 'ma', 'ci'],
 }
 TEXT = dict(title='WHO WILL WIN?', comment='COMMENT YOUR COUNTRY', out='{} OUT', four='FINAL FOUR', three='FINAL THREE',
             final='FINAL', wins='{} WINS!', left='{} LEFT', champion='CHAMPION', slow='SLOW MOTION')
-PARAMS = dict(hp=110, dmg=[9, 18], dmgPush=14, heal=[3, 7], claim=0, speed=230, slowHp=25, slowFactor=0.35, holdEnd=3.5)
+PARAMS = dict(strings=110, gain=[16, 38], spread=0.22, cutReach=0.9, speed=175, slowFactor=0.45, holdEnd=3.5)
 
 def build_html(seed, roster, slow_at=None):
     cs = []
