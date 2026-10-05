@@ -1,13 +1,18 @@
 # Ball Battle Royale – générateur de vidéos
 
-32 pays dans une arène ; chaque choc retire des PV (son « tock »), une boule à 0 PV explose (son « boom »).
-Format TikTok 1080×1920, 30 fps, ~30-38 s.
+Même modèle que @ballbattleroyale : 8 pays à 110 PV placés en cercle, l'anneau est partagé en 8 territoires
+(faisceaux de traits de chaque boule vers son territoire).
+- Choc : la boule qui fonce sur l'autre lui retire des PV (son « tock »).
+- Rebond sur son propre territoire : soin.
+- Avant chaque mort : « ● SLOW MOTION », puis explosion (son « boom »), « X OUT », le tueur récupère le territoire.
+- Final Four / Three / Final, puis « X WINS! ».
+Format TikTok 1080×1920, 30 fps, ~33 s.
 
 ## Générer de nouvelles vidéos
 ```bash
 pip install playwright numpy
 npm pack flag-icons && tar xzf flag-icons-*.tgz   # drapeaux SVG -> ./package/flags
-python3 make.py sim 1 2 3        # test rapide : durée + gagnant de chaque seed
-python3 make.py render 7 42      # rend battle_7.mp4, battle_42.mp4
+python3 make.py sim europe 1 2 3      # test rapide : durée + gagnant de chaque seed
+python3 make.py render europe 13      # rend battle_europe_13.mp4
 ```
-Chaque seed = une partie différente. Pays, couleurs, textes, PV et dégâts se règlent en haut de `make.py`.
+Chaque seed = une partie différente. Listes de 8 pays (`ROSTERS`), textes, PV et dégâts se règlent en haut de `make.py`.

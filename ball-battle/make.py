@@ -5,28 +5,31 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 CH = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 FPS = 30
 
-COUNTRIES = [  # code, name, glow color
- ('fr','France','#3b6cff'),('es','Spain','#ffc400'),('de','Germany','#ffb000'),('it','Italy','#2ecc71'),
- ('gb','UK','#ff2d55'),('pt','Portugal','#1fbf5a'),('br','Brazil','#22d35f'),('ar','Argentina','#6cc4ff'),
- ('us','USA','#ff3b4b'),('mx','Mexico','#14a85a'),('ca','Canada','#ff3040'),('jp','Japan','#ff6b8a'),
- ('kr','South Korea','#4a86ff'),('cn','China','#ff2a2a'),('in','India','#ff9933'),('tr','Türkiye','#ff1f2d'),
- ('ma','Morocco','#d6303a'),('dz','Algeria','#1fa85a'),('tn','Tunisia','#ff1530'),('sn','Senegal','#00c060'),
- ('nl','Netherlands','#ff7a1a'),('be','Belgium','#ffd630'),('ch','Switzerland','#ff2020'),('pl','Poland','#ff5070'),
- ('ua','Ukraine','#ffd500'),('ir','Iran','#2bbf63'),('ng','Nigeria','#18c060'),('eg','Egypt','#e0283c'),
- ('sa','Saudi Arabia','#12a04a'),('au','Australia','#3f7bff'),('se','Sweden','#ffcf1a'),('gr','Greece','#4aa0ff'),
-]
+PALETTE = ['#3d6bff', '#ffc21a', '#22c55e', '#e040c8', '#ff8a1f', '#22d3c5', '#ff3048', '#9b5cff']
+NAMES = dict(fr='France', de='Germany', es='Spain', pt='Portugal', be='Belgium', it='Italy', gb='UK', ma='Morocco',
+             br='Brazil', ar='Argentina', us='USA', mx='Mexico', jp='Japan', dz='Algeria', tn='Tunisia', sn='Senegal',
+             tr='Türkiye', nl='Netherlands', pl='Poland', ch='Switzerland', kr='South Korea')
+ROSTERS = {  # 8 countries per video, placed clockwise from the top-left
+ 'europe':   ['fr', 'de', 'es', 'pt', 'be', 'it', 'gb', 'ma'],
+ 'monde':    ['fr', 'br', 'es', 'jp', 'mx', 'ar', 'us', 'kr'],
+ 'afrique':  ['fr', 'dz', 'es', 'tn', 'sn', 'it', 'ma', 'tr'],
+}
 TEXT = dict(title='WHO WILL WIN?', comment='COMMENT YOUR COUNTRY', out='{} OUT', four='FINAL FOUR', three='FINAL THREE',
-            final='FINAL', winner='WE HAVE A WINNER', wins='{} WINS!', left='{} LEFT', champion='CHAMPION')
+            final='FINAL', wins='{} WINS!', left='{} LEFT', champion='CHAMPION', slow='SLOW MOTION')
+PARAMS = dict(hp=110, dmg=[9, 18], dmgPush=14, heal=[3, 7], claim=0, speed=230, slowHp=25, slowFactor=0.35, holdEnd=3.5)
 
-def build_html(seed):
+def build_html(seed, roster, slow_at=None):
     cs = []
-    for code, name, color in COUNTRIES:
-        svg = open(f'{HERE}/package/flags/1x1/{code}.svg','rb').read()
+    for code, color in zip(ROSTERS[roster], PALETTE):
+        name = NAMES[code]
+        svg = open(f'{HERE}/package/flags/4x3/{code}.svg','rb').read()
         cs.append(dict(code=code, name=name, color=color, flag='data:image/svg+xml;base64,'+base64.b64encode(svg).decode()))
-    cfg = dict(seed=seed, countries=cs, hp=150, dmg=[1, 3], crit=0.12, speed=360, rampAfter=30, holdEnd=3.5, t=TEXT)
+    cfg = dict(seed=seed, countries=cs, t=TEXT, slowAt=slow_at or [], **PARAMS)
     font = base64.b64encode(open(f'{HERE}/montserrat900.woff2','rb').read()).decode()
+    font8 = base64.b64encode(open(f'{HERE}/montserrat800.woff2','rb').read()).decode()
     return f'''<!doctype html><html><head><meta charset="utf-8"><style>
 @font-face{{font-family:Montserrat;font-weight:900;src:url(data:font/woff2;base64,{font}) format("woff2")}}
+@font-face{{font-family:Montserrat;font-weight:800;src:url(data:font/woff2;base64,{font8}) format("woff2")}}
 html,body{{margin:0;background:#000}}</style></head><body><canvas id="c"></canvas>
 <script>window.BB_CFG={json.dumps(cfg)};</script><script>{open(HERE+"/game.js").read()}</script></body></html>'''
 
@@ -70,21 +73,27 @@ def render_audio(events, nframes, path, seed):
     with wave.open(path,'wb') as w:
         w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR); w.writeframes(pcm.tobytes())
 
-def make(seed, out, preview_only=False):
-    html = f'{HERE}/run_{seed}.html'
-    open(html,'w').write(build_html(seed))
+def make(seed, roster, out, preview_only=False):
+    html = f'{HERE}/run_{roster}_{seed}.html'
     with sync_playwright() as p:
         b = p.chromium.launch(executable_path=CH)
         pg = b.new_page(viewport={'width':1080,'height':1920})
+        # pass 1: find kill moments (sim is step-deterministic, slow-mo doesn't change it)
+        open(html,'w').write(build_html(seed, roster))
+        pg.goto('file://'+html); pg.evaluate('BB.init()')
+        k = 0
+        while not pg.evaluate('BB.frame(false)')['done'] and k < FPS*240: k += 1
+        slow_at = pg.evaluate('BB.killSteps()')
+        open(html,'w').write(build_html(seed, roster, slow_at))
         pg.goto('file://'+html); pg.evaluate('BB.init()')
         if preview_only:
             n = 0
             while True:
                 r = pg.evaluate('BB.frame(false)'); n += 1
                 if r['done'] or n > FPS*180: break
-            ev = pg.evaluate('BB.events()')
-            deaths = [e['f']/FPS for e in ev if e['type']=='die']
-            print(f'seed {seed}: {n/FPS:.1f}s, deaths at', [round(x,1) for x in deaths], 'winner', [e['f']/FPS for e in ev if e['type']=='win'])
+            ev = pg.evaluate('BB.events()'); sm = pg.evaluate('BB.summary()')
+            deaths = [round(e['f']/FPS,1) for e in ev if e['type']=='die']
+            print(f'{roster} seed {seed}: {n/FPS:.1f}s deaths {deaths} winner {sm["winner"]}')
             b.close(); return
         vid = out.replace('.mp4','_v.mp4')
         ff = subprocess.Popen(['ffmpeg','-v','error','-y','-f','image2pipe','-framerate',str(FPS),'-c:v','mjpeg','-i','-',
@@ -106,7 +115,6 @@ def make(seed, out, preview_only=False):
     print('wrote', out, f'{n/FPS:.1f}s')
 
 if __name__ == '__main__':
-    mode = sys.argv[1]
-    seeds = [int(s) for s in sys.argv[2:]]
-    for s in seeds:
-        make(s, f'{HERE}/battle_{s}.mp4', preview_only=(mode=='sim'))
+    mode, roster = sys.argv[1], sys.argv[2]
+    for s in [int(x) for x in sys.argv[3:]]:
+        make(s, roster, f'{HERE}/battle_{roster}_{s}.mp4', preview_only=(mode=='sim'))
